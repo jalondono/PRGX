@@ -16,7 +16,7 @@ def validate_number(a, b):
 
 @api_view(['GET', 'POST'])
 def operation_body(request):
-    """List all operations , or create a new operation."""
+    """List all operations , or create a new operation From body request"""
     if request.method == 'GET':
         operations = Operation.objects.all()
         serializer = OperationSerializer(operations, many=True)
@@ -38,7 +38,7 @@ def operation_body(request):
 @api_view(['POST'])
 def operation_url(request):
     """
-    Retrieve, update or delete a code snippet.
+    Create a  new operation from a query string.
     """
     if request.method == 'POST':
         a = float(request.query_params.get('num1'))
