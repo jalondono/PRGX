@@ -3,6 +3,7 @@
 ### This API was developed Using Django-Rest Framework
 #### Funcitionalities:
 * Compute a sum operation between to numbers, either using a body of a post request or the query string
+* Storage Each operation in a SqLite db
 
 #### Easy steps to run it:
 * Get a computer with Linux Os
