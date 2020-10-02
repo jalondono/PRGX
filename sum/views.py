@@ -5,6 +5,15 @@ from .models import Operation
 from .serializers import OperationSerializer
 
 
+def validate_number(a, b):
+    """Validate if a is a number is None"""
+    if a is None:
+        a = 0
+    if b is None:
+        b = 0
+    return a, b
+
+
 @api_view(['GET', 'POST'])
 def operation_body(request):
     """List all operations , or create a new operation."""
@@ -14,10 +23,32 @@ def operation_body(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        a = float(request.data['number_1'])
-        b = float(request.data['number_2'])
+        a = float(request.data.get('number_1'))
+        b = float(request.data.get('number_2'))
+        a, b = validate_number(a, b)
         request.data['result'] = str(a + b)
+
         serializer = OperationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def operation_url(request):
+    """
+    Retrieve, update or delete a code snippet.
+    """
+    if request.method == 'POST':
+        a = float(request.query_params.get('num1'))
+        b = float(request.query_params.get('num2'))
+        a, b = validate_number(a, b)
+        c = a + b
+        data_process = {'number_1': str(a),
+                        'number_2': str(b),
+                        'result': str(c)}
+        serializer = OperationSerializer(data=data_process)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
